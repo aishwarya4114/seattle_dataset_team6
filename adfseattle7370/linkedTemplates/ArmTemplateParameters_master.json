@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adfseattle7370"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://kvtdemoadf.vault.azure.net/"
+		},
+		"snow_seattle_ls_properties_typeProperties_database": {
+			"value": "SEATTLE_DB"
+		},
+		"snow_seattle_ls_properties_typeProperties_role": {
+			"value": "SEATTLE_ROLE"
+		},
+		"snow_seattle_ls_properties_typeProperties_host": {
+			"value": "OXUVOYU-AA36505.snowflakecomputing.com"
+		},
+		"storage_azure_blob_properties_typeProperties_serviceEndpoint": {
+			"value": "https://stagedemodamg7370.blob.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
