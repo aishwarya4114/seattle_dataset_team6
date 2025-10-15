@@ -11,6 +11,10 @@
 			"type": "string",
 			"defaultValue": "https://kvtdemoadf.vault.azure.net/"
 		},
+		"Sas_auth_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'Sas_auth'"
+		},
 		"snow_seattle_ls_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "SEATTLE_DB"
@@ -56,6 +60,9 @@
 					},
 					"AzureKeyVault1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"Sas_auth_sasUri": {
+						"value": "[parameters('Sas_auth_sasUri')]"
 					},
 					"storage_azure_blob_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('storage_azure_blob_properties_typeProperties_serviceEndpoint')]"

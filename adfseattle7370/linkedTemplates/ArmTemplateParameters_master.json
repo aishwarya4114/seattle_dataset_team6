@@ -8,6 +8,9 @@
 		"AzureKeyVault1_properties_typeProperties_baseUrl": {
 			"value": "https://kvtdemoadf.vault.azure.net/"
 		},
+		"Sas_auth_sasUri": {
+			"value": ""
+		},
 		"snow_seattle_ls_properties_typeProperties_database": {
 			"value": "SEATTLE_DB"
 		},
