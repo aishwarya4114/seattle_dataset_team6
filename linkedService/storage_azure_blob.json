@@ -1,0 +1,11 @@
+{
+	"name": "storage_azure_blob",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://stagedemodamg7370.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}
