@@ -478,6 +478,59 @@
 					},
 					"traceLevel": "Coarse"
 				}
+			},
+			{
+				"name": "LOADFACT",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "LoadBreedDim",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceSeattle": {
+								"schema_name": "STAGE",
+								"table_name": "SEATTLE"
+							},
+							"sourceLocationDim": {
+								"schema_name": "DW",
+								"table_name": "DIM_LOCATION"
+							},
+							"sourceDimBreed": {
+								"schema_name": "DW",
+								"table_name": "DIM_BREED"
+							},
+							"sourceDateDim": {
+								"schema_name": "DW",
+								"table_name": "DIM_DATE"
+							},
+							"sink1": {
+								"schema_name": "DW",
+								"table_name": "FACT_LISCENSE"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
 			}
 		],
 		"parameters": {
