@@ -1,0 +1,9 @@
+{
+	"name": "adfseattle7370",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d27aa92c-0d81-4bda-b467-a603bc7ae248",
+		"tenantId": "a8eec281-aaa3-4dae-ac9b-9a398b9215e7"
+	}
+}

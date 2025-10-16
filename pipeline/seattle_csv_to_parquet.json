@@ -1,0 +1,586 @@
+{
+	"name": "seattle_csv_to_parquet",
+	"properties": {
+		"activities": [
+			{
+				"name": "CSV_SEATTLE_PARQUET",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "License Issue Date",
+									"type": "Date",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LicenseIssueDate",
+									"type": "Date",
+									"isNullable": true
+								}
+							},
+							{
+								"source": {
+									"name": "License Number",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "LicenseNumber",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Animal's Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AnimalsName",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Species",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SpeciesName",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Primary Breed",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PrimaryBreed",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "Secondary Breed",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SecondaryBreed",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "ZIP Code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ZipCode",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Seattle_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"folder": {
+								"value": "@pipeline().parameters.folder",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@concat(\n    pipeline().parameters.file_seattle,\n    '.csv'\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Seattle_parquet",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"folder": {
+								"value": "@pipeline().parameters.folder_parquet",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@concat(\n    pipeline().parameters.file_parquet_seattle,\n    '.parquet'\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "CSV_GEO_PARQUET",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CSV_SEATTLE_PARQUET",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "state_fips",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "StateFips",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "state",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "State",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "state_abbr",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "StateAbbr",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "zipcode",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ZipCode",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "county",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "County",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "city",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "City",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Seattle_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"folder": {
+								"value": "@pipeline().parameters.folder",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@concat(\n    pipeline().parameters.file_geo,\n    '.csv'\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Seattle_parquet",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"folder": {
+								"value": "@pipeline().parameters.folder_parquet",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@concat(\n    pipeline().parameters.file_parquet_geo,\n    '.parquet'\n)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "CSV_GEO_PARQUET",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.tables_names",
+						"type": "Expression"
+					},
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "LocationStagePipeline",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataflow": {
+									"referenceName": "LocationStage",
+									"type": "DataFlowReference",
+									"datasetParameters": {
+										"LocationStage": {
+											"container": {
+												"value": "@pipeline().parameters.container",
+												"type": "Expression"
+											},
+											"folder": {
+												"value": "@pipeline().parameters.folder_parquet",
+												"type": "Expression"
+											},
+											"file": {
+												"value": "@concat(\n    item(),\n    '.parquet'\n)",
+												"type": "Expression"
+											}
+										},
+										"sink1": {
+											"schema_name": {
+												"value": "@pipeline().parameters.schema_stage_name",
+												"type": "Expression"
+											},
+											"table_name": {
+												"value": "@toUpper(\n    item()\n)",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "LoadLocationDim",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "LoadLocationDim",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SourceLocationStage": {
+								"schema_name": "STAGE",
+								"table_name": "GEO"
+							},
+							"sinkLocationDim": {
+								"schema_name": "DW",
+								"table_name": "DIM_LOCATION"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
+			},
+			{
+				"name": "LoadBreedDim",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "LoadLocationDim",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "LoadBreedDim",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceSeattleStage": {
+								"schema_name": "STAGE",
+								"table_name": "SEATTLE"
+							},
+							"sinkDimBreed": {
+								"schema_name": "DW",
+								"table_name": "DIM_BREED"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
+			},
+			{
+				"name": "LOADFACT",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "LoadBreedDim",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceSeattle": {
+								"schema_name": "STAGE",
+								"table_name": "SEATTLE"
+							},
+							"sourceLocationDim": {
+								"schema_name": "DW",
+								"table_name": "DIM_LOCATION"
+							},
+							"sourceDimBreed": {
+								"schema_name": "DW",
+								"table_name": "DIM_BREED"
+							},
+							"sourceDateDim": {
+								"schema_name": "DW",
+								"table_name": "DIM_DATE"
+							},
+							"sink1": {
+								"schema_name": "DW",
+								"table_name": "FACT_LISCENSE"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Coarse"
+				}
+			}
+		],
+		"parameters": {
+			"container": {
+				"type": "String",
+				"defaultValue": "stagedataseattle"
+			},
+			"folder": {
+				"type": "String",
+				"defaultValue": "CSV_seattle"
+			},
+			"file_seattle": {
+				"type": "String",
+				"defaultValue": "Seattle_Pet_Licenses_20251015"
+			},
+			"csv_names": {
+				"type": "array",
+				"defaultValue": [
+					"Seattle_Pet_Licenses_20251015",
+					"geo-data"
+				]
+			},
+			"file_geo": {
+				"type": "string",
+				"defaultValue": "geo-data"
+			},
+			"folder_parquet": {
+				"type": "string",
+				"defaultValue": "Parquet_seattle"
+			},
+			"file_parquet_seattle": {
+				"type": "string",
+				"defaultValue": "SEATTLE"
+			},
+			"file_parquet_geo": {
+				"type": "string",
+				"defaultValue": "GEO"
+			},
+			"tables_names": {
+				"type": "array",
+				"defaultValue": [
+					"GEO",
+					"SEATTLE"
+				]
+			},
+			"schema_stage_name": {
+				"type": "string",
+				"defaultValue": "STAGE"
+			}
+		},
+		"annotations": []
+	}
+}
