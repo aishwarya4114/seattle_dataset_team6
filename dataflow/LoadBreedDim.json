@@ -1,0 +1,91 @@
+{
+	"name": "LoadBreedDim",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Seattle_snow",
+						"type": "DatasetReference"
+					},
+					"name": "sourceSeattleStage"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Seattle_snow",
+						"type": "DatasetReference"
+					},
+					"name": "sinkDimBreed"
+				}
+			],
+			"transformations": [
+				{
+					"name": "surrogateKeyBreed"
+				},
+				{
+					"name": "aggregateColumns"
+				},
+				{
+					"name": "Selectingrelevanatcolumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          LicenseIssueDate as string,",
+				"          LicenseNumber as string,",
+				"          AnimalsName as string,",
+				"          SpeciesName as string,",
+				"          PrimaryBreed as string,",
+				"          SecondaryBreed as string,",
+				"          ZipCode as string,",
+				"          CREATED_DT as timestamp,",
+				"          CREATED_BY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'table') ~> sourceSeattleStage",
+				"aggregateColumns keyGenerate(output(BREED_KEY as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKeyBreed",
+				"sourceSeattleStage aggregate(groupBy(SpeciesName,",
+				"          PrimaryBreed,",
+				"          SecondaryBreed,",
+				"          CREATED_BY,",
+				"          CREATED_DT),",
+				"     COUNT = count(LicenseNumber)) ~> aggregateColumns",
+				"surrogateKeyBreed select(mapColumn(",
+				"          SpeciesName,",
+				"          PrimaryBreed,",
+				"          SecondaryBreed,",
+				"          CREATED_BY,",
+				"          CREATED_DT,",
+				"          BREED_KEY",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Selectingrelevanatcolumns",
+				"Selectingrelevanatcolumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          SPECIES = SpeciesName,",
+				"          PRIMARY_BREED = PrimaryBreed,",
+				"          SECONDARY_BREED = SecondaryBreed,",
+				"          DI_CREATED_BY = CREATED_BY,",
+				"          DI_CREATED_DT = CREATED_DT,",
+				"          BREED_KEY",
+				"     )) ~> sinkDimBreed"
+			]
+		}
+	}
+}
